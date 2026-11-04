@@ -1,0 +1,14 @@
+{
+  "spec": "test/**/*.spec.js",
+  "require": ["test/support/hooks.js"],
+  "reporter": "mochawesome",
+  "reporter-option": [
+    "reportDir=mochawesome-report",
+    "reportFilename=index",
+    "reportTitle=AS2Commerce - Checkout API tests",
+    "reportPageTitle=Checkout API tests",
+    "quiet=false",
+    "json=true"
+  ],
+  "timeout": 10000
+}

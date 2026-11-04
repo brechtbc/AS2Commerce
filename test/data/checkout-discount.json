@@ -1,0 +1,23 @@
+[
+  {
+    "id": "EP1",
+    "partition": "paymentMethod = cash (valid, 10% discount)",
+    "paymentMethod": "cash",
+    "discountRate": 0.1,
+    "cart": [
+      { "productId": 2, "quantity": 1 },
+      { "productId": 3, "quantity": 10 }
+    ]
+  },
+  {
+    "id": "EP2",
+    "partition": "paymentMethod = credit_card (valid, no discount)",
+    "paymentMethod": "credit_card",
+    "discountRate": 0,
+    "cart": [
+      { "productId": 1, "quantity": 2 },
+      { "productId": 2, "quantity": 1 },
+      { "productId": 3, "quantity": 7 }
+    ]
+  }
+]

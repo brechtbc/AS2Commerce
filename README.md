@@ -86,3 +86,21 @@ curl -X POST http://localhost:3000/cart -H "Content-Type: application/json" \
 curl -X POST http://localhost:3000/checkout -H "Content-Type: application/json" \
   -H "Authorization: Bearer <token>" -d '{"paymentMethod":"cash"}'
 ```
+
+## Automated API tests
+
+Stack: [Mocha](https://mochajs.org/), [SuperTest](https://github.com/ladjs/supertest), [Chai](https://www.chaijs.com/), [dotenv](https://github.com/motdotla/dotenv) and [Mochawesome](https://github.com/adamgruber/mochawesome).
+
+```bash
+cp .env.example .env   # once; holds BASE_URL and the test user
+npm test
+```
+
+If nothing answers on `BASE_URL`, the run starts the API itself and stops it afterwards. The HTML report is written to `mochawesome-report/index.html` (request/response evidence is attached to each test).
+
+| Folder | Content |
+|---|---|
+| `test/checkout/` | Specs per module: `discount.spec.js` (cash 10% / credit card 0%), `invalid-checkout.spec.js` (invalid payment method, empty cart) |
+| `test/helpers/` | Reusable functions: `login()`, cart preparation, `checkout()`, expected amounts, report evidence |
+| `test/data/` | Data-driven test data (JSON): products and one entry per equivalence partition (EP1-EP6) |
+| `test/support/` | Mocha root hooks (loads `.env`, starts the API when needed) |

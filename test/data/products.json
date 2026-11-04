@@ -1,0 +1,5 @@
+{
+  "1": { "name": "Wireless Mouse", "priceCents": 2500 },
+  "2": { "name": "Mechanical Keyboard", "priceCents": 8000 },
+  "3": { "name": "USB-C Hub", "priceCents": 4500 }
+}
