@@ -1,0 +1,36 @@
+[
+  {
+    "id": "EP3",
+    "partition": "paymentMethod = string not in {cash, credit_card}",
+    "body": { "paymentMethod": "debit_card" },
+    "cart": [
+      { "productId": 1, "quantity": 2 },
+      { "productId": 2, "quantity": 2 }
+    ],
+    "expectedError": "paymentMethod must be one of: cash, credit_card"
+  },
+  {
+    "id": "EP4",
+    "partition": "paymentMethod missing from body",
+    "body": {},
+    "cart": [{ "productId": 1, "quantity": 10 }],
+    "expectedError": "paymentMethod must be one of: cash, credit_card"
+  },
+  {
+    "id": "EP5",
+    "partition": "paymentMethod of wrong type (boolean)",
+    "body": { "paymentMethod": true },
+    "cart": [
+      { "productId": 1, "quantity": 8 },
+      { "productId": 2, "quantity": 2 }
+    ],
+    "expectedError": "paymentMethod must be one of: cash, credit_card"
+  },
+  {
+    "id": "EP6",
+    "partition": "valid paymentMethod with an empty cart",
+    "body": { "paymentMethod": "credit_card" },
+    "cart": [],
+    "expectedError": "cart is empty"
+  }
+]
