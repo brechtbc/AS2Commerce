@@ -1,0 +1,86 @@
+name: API tests
+
+# Runs on every push to a branch that has an open pull request targeting main
+# (the pull_request "synchronize" event fires on each new push), when such a PR
+# is opened/reopened, and on pushes to main itself (e.g. after a merge).
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: api-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  api-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    env:
+      PORT: 3300
+      BASE_URL: http://localhost:3300
+      # The pipeline starts the server itself; the tests must not fall back to
+      # starting their own copy, so an unreachable API fails the run.
+      START_SERVER_IF_DOWN: 'false'
+      USER_EMAIL: alice@example.com
+      USER_PASSWORD: alice123
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Start API server
+        run: |
+          # Same as "npm start", but run node directly so the PID is the server itself.
+          nohup node src/server.js > server.log 2>&1 &
+          echo $! > server.pid
+
+      - name: Wait for API server to be up
+        run: |
+          for i in $(seq 1 30); do
+            if curl -sf "$BASE_URL/swagger.yaml" > /dev/null; then
+              echo "API is up at $BASE_URL"
+              exit 0
+            fi
+            echo "Waiting for API ($i/30)..."
+            sleep 2
+          done
+          echo "API did not start in time"
+          cat server.log
+          exit 1
+
+      - name: Run API tests
+        run: npm test
+
+      - name: Stop API server
+        if: always()
+        run: |
+          if [ -f server.pid ]; then kill "$(cat server.pid)" || true; fi
+
+      - name: Upload Mochawesome report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mochawesome-report
+          path: mochawesome-report/
+          if-no-files-found: warn
+
+      - name: Upload server log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-log
+          path: server.log
+          if-no-files-found: ignore
