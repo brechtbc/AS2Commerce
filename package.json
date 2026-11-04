@@ -1,0 +1,15 @@
+{
+  "name": "ecommerce-checkout-api",
+  "version": "1.0.0",
+  "description": "E-commerce REST API for checkout (login, register, cart, checkout) with in-memory data",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.6.1"
+  }
+}
